@@ -1,10 +1,11 @@
 name: Collect market data
 
 on:
-  # Every 30 minutes, off the top of the hour when GitHub's scheduler is busiest
-  schedule:
-    - cron: "7,37 * * * *"
+  # Main trigger: cron-job.org calls workflow_dispatch every hour at :07
   workflow_dispatch:
+  # Sparse backup in case the main trigger stops; GitHub's scheduler is often late or skipped
+  schedule:
+    - cron: "37 */6 * * *"
 
 concurrency:
   group: collector

@@ -1,4 +1,4 @@
-"""HySense collector: runs every 5 minutes on GitHub Actions.
+"""HySense collector: runs every hour on GitHub Actions.
 
 Fetches ApeWisdom mentions, computes HyScores, appends history points, refreshes prices,
 and stores everything in the database read by the Next.js API routes.
@@ -17,7 +17,7 @@ import sentiment
 from store import Store
 
 # A point is always written at least this often, even when nothing changed,
-# so charts keep a regular baseline without writing identical rows every 5 minutes.
+# so charts keep a regular baseline without writing identical rows on every run.
 HISTORY_HEARTBEAT_SECONDS = 3600
 
 
