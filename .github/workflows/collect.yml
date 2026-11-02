@@ -1,11 +1,10 @@
 name: Collect market data
 
 on:
-  # Main trigger: cron-job.org calls the GitHub API every 5 minutes (GitHub's own scheduler is often late)
-  workflow_dispatch:
-  # Backup in case the external trigger stops
+  # Every 30 minutes, off the top of the hour when GitHub's scheduler is busiest
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "7,37 * * * *"
+  workflow_dispatch:
 
 concurrency:
   group: collector
@@ -17,7 +16,11 @@ permissions:
 jobs:
   collect:
     runs-on: ubuntu-latest
-    timeout-minutes: 8
+    timeout-minutes: 10
+    permissions:
+      contents: read
+      # Only used by the keepalive step below
+      actions: write
     steps:
       - uses: actions/checkout@v4
 
@@ -44,3 +47,10 @@ jobs:
           TURSO_DATABASE_URL: ${{ secrets.TURSO_DATABASE_URL }}
           TURSO_AUTH_TOKEN: ${{ secrets.TURSO_AUTH_TOKEN }}
         run: python collect.py
+
+      # GitHub disables schedules in repos without activity for 60 days; re-enabling resets that timer
+      - name: Keep schedule alive
+        if: github.event_name == 'schedule'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api -X PUT "repos/${{ github.repository }}/actions/workflows/collect.yml/enable"

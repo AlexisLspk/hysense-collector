@@ -1,7 +1,7 @@
 """News sentiment: headlines from Finviz (pd.read_html) and RSS feeds, scored by the
 HySense analyzer (jobs/sentiment, Node), aggregated like the old Reddit sentiment route.
 
-Only a few assets are refreshed per run: top assets every 30 minutes, the rest every 6 hours.
+Only part of the assets are refreshed per run: top assets on every run, the rest every 12 hours.
 """
 
 from __future__ import annotations
@@ -35,10 +35,11 @@ UA = {
 EASTERN = ZoneInfo("America/New_York")
 CRYPTO_FEEDS = ["https://www.coindesk.com/arc/outboundfeeds/rss/", "https://cointelegraph.com/rss"]
 
-ASSETS_PER_RUN = 25
+ASSETS_PER_RUN = 60
 TOP_ASSETS = 30
-TOP_TTL_SECONDS = 30 * 60
-OTHER_TTL_SECONDS = 6 * 3600
+# Below the 30-minute run interval so scheduler jitter never skips a refresh
+TOP_TTL_SECONDS = 25 * 60
+OTHER_TTL_SECONDS = 12 * 3600
 MAX_HEADLINES = 30
 MAX_AGE = timedelta(days=7)
 
