@@ -1,0 +1,12 @@
+{
+  "name": "hysense-sentiment",
+  "private": true,
+  "description": "Headline sentiment scoring for the collector job",
+  "scripts": {
+    "score": "tsx score.ts"
+  },
+  "dependencies": {
+    "compromise": "^14.14.4",
+    "tsx": "^4.20.0"
+  }
+}
